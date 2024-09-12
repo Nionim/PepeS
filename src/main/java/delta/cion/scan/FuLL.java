@@ -9,7 +9,8 @@ public class FuLL {
             String ipNon = ipRaw.substring(0, lastIndex + 1);
             String ipFin = ipNon + io;
 
-            ScannerMainClass.Start(ipFin, portStart, portFinal, threadsz, timer);
+            ScannerMainClass scannerMainClass = new ScannerMainClass();
+            scannerMainClass.Start(ipFin, portStart, portFinal, threadsz, timer);
         }
     }
 }

@@ -60,7 +60,10 @@ public class PepeS {
                         if (ipFinal >255) break;
 
                         FuLL.Start(ip, portStart, portFinal, ipStart, ipFinal, threadsz, timer);
-                    } else ScannerMainClass.Start(ip, portStart, portFinal, threadsz, timer);
+                    } else {
+                        ScannerMainClass scannerMainClass = new ScannerMainClass();
+                        scannerMainClass.Start(ip, portStart, portFinal, threadsz, timer);
+                    }
                     valid = true;
                     finaly = true;
                 } catch (Exception e) {

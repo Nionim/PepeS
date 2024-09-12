@@ -1,10 +1,8 @@
 package delta.cion.scan;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import delta.cion.util.Colorize;
+import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
-import java.net.URL;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ScannerMainClass {
 
-    public static void Start(String ipRaw, int portStart, int portFinal, int threadsz, int timer) {
+    public void Start(String ipRaw, int portStart, int portFinal, int threadsz, int timer) {
         int threads = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(threads * threadsz);
 
@@ -27,20 +25,21 @@ public class ScannerMainClass {
                     double randomz = random.nextDouble(101) * 100;
                     if (randomz >= 50) Thread.sleep(timer * 100);
                     if (port % 100 == 0) Thread.sleep(10000);
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    JsonNode jsonNode = objectMapper.readTree(new URL(url));
 
-                    boolean response = jsonNode.get("online").booleanValue();
+                    try (JsonNodes jsonNodes = new JsonNodes(url)) {
 
-                    if (response && jsonNode.get("online") != null) {
-                        String motd = Colorize.colorize(jsonNode.get("motd").get("raw").asText().replaceAll(" {2}", " "));
-                        String online = jsonNode.get("players").get("online") + "/" + jsonNode.get("players").get("max");
+                        boolean response = Boolean.getBoolean(jsonNodes.get("online"));
 
-                        Sender.send(3, "Server: " + ip + " Found!\n" + motd + "\nOnline: " + online);
-                        SaveLogic.SaveFile(ip, jsonNode, true, online);
-                    } else {
-                        Sender.send(3, "Server: " + ip + " Not found!");
-                        SaveLogic.SaveFile(ip, jsonNode, false, null);
+                        if (response && jsonNodes.get("online") != null) {
+                            String motd = Colorize.colorize(jsonNodes.get("motd.raw")).replaceAll(" {2}", " ");
+                            String online = jsonNodes.get("players.online") + "/" + jsonNodes.get("players.max");
+
+                            Sender.send(3, "Server: " + ip + " Found!\n" + motd + "\nOnline: " + online);
+                            SaveLogic.SaveFile(ip, true, online, jsonNodes);
+                        } else {
+                            Sender.send(3, "Server: " + ip + " Not found!");
+                            SaveLogic.SaveFile(ip, false, null, jsonNodes);
+                        }
                     }
                 } catch (Exception e) {
                     Sender.send(3, "Searching " + ip + " error: " + e.getMessage());

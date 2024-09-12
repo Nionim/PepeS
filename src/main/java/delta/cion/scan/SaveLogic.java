@@ -2,6 +2,7 @@ package delta.cion.scan;
 
 import club.minnced.discord.webhook.WebhookClient;
 import com.fasterxml.jackson.databind.JsonNode;
+import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
 
 import java.io.BufferedWriter;
@@ -12,12 +13,12 @@ import java.util.ArrayList;
 
 public class SaveLogic {
 
-    public static void SaveFile(String ip, JsonNode jsonNode, boolean status, String online) {
+    public static void SaveFile(String ip, boolean status, String online, JsonNodes jsonNodes) {
 
         File Save;
 
-        String pathResult = "online-%s.txt";
-        String pathNoResult = "offline-%s.txt";
+        String pathResult = "logs/online-%s.txt";
+        String pathNoResult = "logs/offline-%s.txt";
 
         String fileIP = ip.substring(0, ip.indexOf(":"));
 
@@ -38,14 +39,14 @@ public class SaveLogic {
         }
 
         try (FileWriter fw = new FileWriter(Save.getAbsoluteFile(), true)) {
-            try (BufferedWriter bw = new BufferedWriter(fw);) {
+            try (BufferedWriter bw = new BufferedWriter(fw)) {
                 bw.newLine();
                 if (status) {
-                    bw.write("Server: "+ip);
+                    bw.write("Server: " + ip);
                     bw.newLine();
-                    bw.write(jsonNode.get("motd").get("clean").asText()+"\nOnline: "+online);
+                    bw.write(jsonNodes.get("motd.clean") + "\nOnline: " + online);
                 } else {
-                    bw.write("Server: "+ip+" Not found!");
+                    bw.write("Server: " + ip + " Not found!");
                 }
             }
         } catch (Exception e) {
