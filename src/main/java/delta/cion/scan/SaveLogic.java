@@ -1,7 +1,6 @@
 package delta.cion.scan;
 
 import club.minnced.discord.webhook.WebhookClient;
-import com.fasterxml.jackson.databind.JsonNode;
 import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
 
@@ -17,13 +16,18 @@ public class SaveLogic {
 
         File Save;
 
-        String pathResult = "logs/online-%s.txt";
-        String pathNoResult = "logs/offline-%s.txt";
-
         String fileIP = ip.substring(0, ip.indexOf(":"));
 
-        File onlineSave = new File(String.format(pathResult, fileIP));
-        File offlineSave = new File(String.format(pathNoResult, fileIP));
+        File logs = new File("logs");
+        if (!logs.exists()) logs.mkdir();
+        File ipFolder = new File(String.format("logs/%s", fileIP));
+        if (!ipFolder.exists()) ipFolder.mkdir();
+
+        String pathResult = "logs/%s/online-%s.txt";
+        String pathNoResult = "logs/%s/offline-%s.txt";
+
+        File onlineSave = new File(String.format(pathResult, fileIP, fileIP));
+        File offlineSave = new File(String.format(pathNoResult, fileIP, fileIP));
 
         try {
             if (!offlineSave.exists()) offlineSave.createNewFile();

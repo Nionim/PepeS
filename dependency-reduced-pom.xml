@@ -4,7 +4,7 @@
   <groupId>delta.cion</groupId>
   <artifactId>PepeS</artifactId>
   <name>PepeS</name>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>

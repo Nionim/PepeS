@@ -1,7 +1,8 @@
 package delta.cion.util;
 
 public class Sender {
-    private static final String prefix = Colorize.colorize("&7Delta&4Cion &8>>&r ");
+
+    private static final String prefix = Colorize.colorize("&7Delta&4Project &8>>&r ");
     private static final boolean debug = true;
 
     public static void send(int level, String content) {

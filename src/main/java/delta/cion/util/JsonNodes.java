@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.net.URL;
 
-public class JsonNodes  implements AutoCloseable {
+public class JsonNodes {
 
     private JsonNode jsonNode;
 
@@ -22,32 +22,7 @@ public class JsonNodes  implements AutoCloseable {
         for (String key : pathes) {
             if (jsonNode.has(key)) jsonNode = jsonNode.get(key);
             else return null;
-            return jsonNode.asText();
         }
-
-
-        if (path.contains(".")) {
-
-            jsonNode = jsonNode.get(path.substring(0, path.indexOf(".")));
-            path = path.substring(path.indexOf(".")+1);
-
-            if (path.contains(".")) return recursiveGet(jsonNode, path);
-            else return jsonNode.get(path).asText();
-        } else return jsonNode.get(path).asText();
-    }
-
-    private String recursiveGet(JsonNode jsonNode, String path) {
-        if (path.contains(".")) {
-
-            jsonNode = jsonNode.get(path.substring(0, path.indexOf(".")));
-            path = path.substring(path.indexOf(".")+1);
-
-            return recursiveGet(jsonNode, path);
-        } else return jsonNode.get(path).asText();
-    }
-
-    @Override
-    public void close() throws Exception {
-
+        return jsonNode.asText();
     }
 }

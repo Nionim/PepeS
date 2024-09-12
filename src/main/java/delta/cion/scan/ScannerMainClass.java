@@ -4,10 +4,10 @@ import delta.cion.util.Colorize;
 import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 
 public class ScannerMainClass {
 
@@ -16,17 +16,23 @@ public class ScannerMainClass {
         ExecutorService executor = Executors.newFixedThreadPool(threads * threadsz);
 
         for (int i = portStart; i <= portFinal; i++) {
-            final int port = i;
-            executor.execute(() -> {
-                String ip = ipRaw + ":" + port;
-                String url = "https://api.mcstatus.io/v2/status/java/" + ip;
-                try {
-                    Random random = new Random(timer);
-                    double randomz = random.nextDouble(101) * 100;
-                    if (randomz >= 50) Thread.sleep(timer * 100);
-                    if (port % 100 == 0) Thread.sleep(10000);
 
-                    try (JsonNodes jsonNodes = new JsonNodes(url)) {
+            //CommandChecker commandChecker = new CommandChecker();
+            //commandChecker.sendCommand();
+
+            //if (CommandChecker.isStopCommand()) break;
+            if (true) {
+                final int port = i;
+                executor.execute(() -> {
+                    String ip = ipRaw + ":" + port;
+                    String url = "https://api.mcstatus.io/v2/status/java/" + ip;
+                    try {
+                        Random random = new Random(timer);
+                        double randomz = random.nextDouble(101) * 100;
+                        if (randomz >= 50) Thread.sleep(timer * 100);
+                        if (port % 100 == 0) Thread.sleep(10000);
+
+                        JsonNodes jsonNodes = new JsonNodes(url);
 
                         boolean response = Boolean.getBoolean(jsonNodes.get("online"));
 
@@ -40,11 +46,11 @@ public class ScannerMainClass {
                             Sender.send(3, "Server: " + ip + " Not found!");
                             SaveLogic.SaveFile(ip, false, null, jsonNodes);
                         }
+                    } catch (Exception e) {
+                        Sender.send(3, "Searching " + ip + " error: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    Sender.send(3, "Searching " + ip + " error: " + e.getMessage());
-                }
-            });
+                });
+            }
         }
 
         executor.shutdown();
@@ -58,6 +64,27 @@ public class ScannerMainClass {
         }
 
         SaveLogic.Finaly(ipRaw);
+    }
+
+    static class CommandChecker extends Thread {
+        private static volatile boolean stopCommand = false;
+        private final Scanner scanner = new Scanner(System.in);
+
+        public static boolean isStopCommand() {
+            return stopCommand;
+        }
+
+        public void sendCommand() {
+            while (!isStopCommand()) {
+                String command = scanner.nextLine();
+                switch (command) {
+                    case "stop" -> {
+                        stopCommand = true;
+                        Sender.send(3, "Stopping process..");
+                    }
+                }
+            }
+        }
     }
 }
 

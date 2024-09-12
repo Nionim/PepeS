@@ -34,7 +34,7 @@ public class PepeS {
 
                     Sender.send(1, "Threads modifier (threads * X) (DON`T SET 0!!): ");
                     int threadsz = Integer.parseInt(scanner.nextLine());
-                    Sender.send(3, "Threads modifier -> &6"+portFinal);
+                    Sender.send(3, "Threads modifier -> &6"+threadsz);
 
                     Sender.send(1, "Enter sleep timer (s): ");
                     int timer = Integer.parseInt(scanner.nextLine());
@@ -66,7 +66,7 @@ public class PepeS {
                     }
                     valid = true;
                     finaly = true;
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Sender.send(3, e.getMessage());
                 }
             }
