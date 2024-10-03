@@ -4,7 +4,7 @@
   <groupId>delta.cion</groupId>
   <artifactId>PepeS</artifactId>
   <name>PepeS</name>
-  <version>0.0.4</version>
+  <version>0.0.6-DEV</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>
@@ -42,7 +42,7 @@
     </plugins>
   </build>
   <properties>
-    <java.version>17</java.version>
+    <java.version>22</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

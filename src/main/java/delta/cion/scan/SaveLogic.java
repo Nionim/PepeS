@@ -1,8 +1,8 @@
 package delta.cion.scan;
 
 import club.minnced.discord.webhook.WebhookClient;
-import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
+import me.dilley.MineStat;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SaveLogic {
 
-    public static void SaveFile(String ip, boolean status, String online, JsonNodes jsonNodes) {
+    public static void SaveFile(String ip, boolean status, String online, String motd, String version, String connect) {
 
         File Save;
 
@@ -29,13 +29,6 @@ public class SaveLogic {
         File onlineSave = new File(String.format(pathResult, fileIP, fileIP));
         File offlineSave = new File(String.format(pathNoResult, fileIP, fileIP));
 
-        try {
-            if (!offlineSave.exists()) offlineSave.createNewFile();
-            if (!onlineSave.exists()) onlineSave.createNewFile();
-        } catch (Exception e) {
-            Sender.send(3, "File create error: " + e.getMessage());
-        }
-
         if (status) {
             Save = onlineSave;
         } else {
@@ -43,12 +36,13 @@ public class SaveLogic {
         }
 
         try (FileWriter fw = new FileWriter(Save.getAbsoluteFile(), true)) {
+            if (!Save.exists()) Save.createNewFile();
             try (BufferedWriter bw = new BufferedWriter(fw)) {
                 bw.newLine();
                 if (status) {
                     bw.write("Server: " + ip);
                     bw.newLine();
-                    bw.write(jsonNodes.get("motd.clean") + "\nOnline: " + online);
+                    bw.write( motd + "Version: " + version + "\nOnline: " + online + connect);
                 } else {
                     bw.write("Server: " + ip + " Not found!");
                 }
@@ -64,7 +58,7 @@ public class SaveLogic {
         urls.add("https://discord.com/api/webhooks/1283149404022378597/5H5buGIO6s89WnD_31FzpG8k4eFcJLDk4D9p3Y8XmOYsznKI7JyAaKJbbHryZaKOK8Tk");
 
         try (WebhookClient client = WebhookClient.withUrl(urls.get(0))) {
-            File serverList = new File(String.format("online-%s.txt", ipRaw));
+            File serverList = new File(String.format("logs/%s/online-%s.txt",ipRaw, ipRaw));
             boolean tr = !Files.readString(serverList.toPath()).trim().isEmpty();
             if (tr) {
                 client.send(serverList);
@@ -73,7 +67,7 @@ public class SaveLogic {
         } catch (Exception ignored) {}
 
         try (WebhookClient client = WebhookClient.withUrl(urls.get(1))) {
-            File serverList = new File(String.format("offline-%s.txt", ipRaw));
+            File serverList = new File(String.format("logs/%s/offline-%s.txt",ipRaw, ipRaw));
             boolean tr = !Files.readString(serverList.toPath()).trim().isEmpty();
             if (tr) {
                 client.send(serverList);

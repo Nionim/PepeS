@@ -1,8 +1,9 @@
 package delta.cion.scan;
 
 import delta.cion.util.Colorize;
-import delta.cion.util.JsonNodes;
 import delta.cion.util.Sender;
+import me.dilley.MineStat;
+
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -15,42 +16,45 @@ public class ScannerMainClass {
         int threads = Runtime.getRuntime().availableProcessors();
         ExecutorService executor = Executors.newFixedThreadPool(threads * threadsz);
 
+
+        try (CommandChecker commandChecker = new CommandChecker()) {
+            commandChecker.start();
+        } catch (Throwable ignore) {}
+
         for (int i = portStart; i <= portFinal; i++) {
+            final int port = i;
+            executor.execute(() -> {
 
-            //CommandChecker commandChecker = new CommandChecker();
-            //commandChecker.sendCommand();
+                String ip = ipRaw + ":" + port;
+                MineStat ms = new MineStat(ipRaw, port);
 
-            //if (CommandChecker.isStopCommand()) break;
-            if (true) {
-                final int port = i;
-                executor.execute(() -> {
-                    String ip = ipRaw + ":" + port;
-                    String url = "https://api.mcstatus.io/v2/status/java/" + ip;
-                    try {
-                        Random random = new Random(timer);
-                        double randomz = random.nextDouble(101) * 100;
-                        if (randomz >= 50) Thread.sleep(timer * 100);
-                        if (port % 100 == 0) Thread.sleep(10000);
+                try {
+                    Random random = new Random(timer);
+                    double randomz = random.nextDouble(101) * 100;
+                    if (randomz >= 50) Thread.sleep(timer * 100);
+                    if (port % 100 == 0) Thread.sleep(10000);
 
-                        JsonNodes jsonNodes = new JsonNodes(url);
+                    if (ms.isServerUp()) {
+                        String motd = Colorize.colorize(ms.getStrippedMotd()).replaceAll(" {2}", " ");
+                        String online = ms.getCurrentPlayers()+ "/" + ms.getMaximumPlayers();
+                        String version = Colorize.colorize(ms.getVersion());
 
-                        boolean response = Boolean.getBoolean(jsonNodes.get("online"));
+                        String connect = ms.getConnectionStatus().toString();
+                        String connectionStat = ms.getConnectionStatusDescription();
 
-                        if (response && jsonNodes.get("online") != null) {
-                            String motd = Colorize.colorize(jsonNodes.get("motd.raw")).replaceAll(" {2}", " ");
-                            String online = jsonNodes.get("players.online") + "/" + jsonNodes.get("players.max");
+                        String status = "\nConnect attempt: "+connect+"\nConnection description: "+connectionStat;
 
-                            Sender.send(3, "Server: " + ip + " Found!\n" + motd + "\nOnline: " + online);
-                            SaveLogic.SaveFile(ip, true, online, jsonNodes);
-                        } else {
-                            Sender.send(3, "Server: " + ip + " Not found!");
-                            SaveLogic.SaveFile(ip, false, null, jsonNodes);
-                        }
-                    } catch (Exception e) {
-                        Sender.send(3, "Searching " + ip + " error: " + e.getMessage());
+                        Sender.send(3, "Server: " + ip + " Found!\n" + motd + "\nVersion: " + version + "\nOnline: " + online + status);
+                        SaveLogic.SaveFile(ip, true, online, motd, version, status);
+                    } else {
+                        Sender.send(3, "Server: " + ip + " Not found!");
+                        SaveLogic.SaveFile(ip, false, null, null, null, null);
                     }
-                });
-            }
+                } catch (Exception e) {
+                    Sender.send(3, "Searching " + ip + " error: " + e.getMessage());
+                    Sender.send(3, e.toString());
+                }
+            });
         }
 
         executor.shutdown();
@@ -66,7 +70,7 @@ public class ScannerMainClass {
         SaveLogic.Finaly(ipRaw);
     }
 
-    static class CommandChecker extends Thread {
+    static class CommandChecker extends Thread implements AutoCloseable {
         private static volatile boolean stopCommand = false;
         private final Scanner scanner = new Scanner(System.in);
 
@@ -74,16 +78,26 @@ public class ScannerMainClass {
             return stopCommand;
         }
 
-        public void sendCommand() {
+
+
+        @Override
+        public void run() {
             while (!isStopCommand()) {
                 String command = scanner.nextLine();
                 switch (command) {
                     case "stop" -> {
                         stopCommand = true;
                         Sender.send(3, "Stopping process..");
+                        Runtime.getRuntime().exit(0);
                     }
                 }
             }
+        }
+
+        @Override
+        public void close() throws Exception {
+            scanner.close();
+            stopCommand = true;
         }
     }
 }
