@@ -4,7 +4,6 @@ import delta.cion.config.CreateConf;
 import delta.cion.modular.ModuleCore;
 import delta.cion.scan.FuLL;
 import delta.cion.scan.ScannerMainClass;
-import delta.cion.util.ProxyStarter;
 import delta.cion.util.Sender;
 
 import java.net.InetAddress;
@@ -16,7 +15,6 @@ public class PepeS {
 
     public static void main(String[] args) {
         ModuleCore.ModuleInitialize();
-        ProxyStarter.run();
 
         Scanner scanner = new Scanner(System.in);
         CreateConf.confCreate();
