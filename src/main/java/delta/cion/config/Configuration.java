@@ -5,10 +5,15 @@ import delta.cion.util.Sender;
 import java.io.FileOutputStream;
 import java.util.Properties;
 
-public class CreateConf {
+public class Configuration {
 
-    public static void confCreate() {
-        Properties conf = new Properties();
+    private Properties conf;
+
+    public Configuration() {
+        conf = new Properties();
+    }
+
+    public void confCreate() {
         conf.setProperty("DebugMode", "true");
         conf.setProperty("HostMode", "false");
         try (FileOutputStream fos = new FileOutputStream("config.properties")) {

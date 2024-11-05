@@ -1,15 +1,13 @@
 ### Other ###
-./logs
-./proxies
-./dependency-reduced-pom.xml
+logs/
+proxies/
+dependency-reduced-pom.xml
 
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### Project ###
-logs/
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

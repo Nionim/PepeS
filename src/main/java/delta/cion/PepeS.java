@@ -1,25 +1,29 @@
 package delta.cion;
 
-import delta.cion.config.CreateConf;
+import delta.cion.config.Configuration;
 import delta.cion.modular.ModuleCore;
 import delta.cion.scan.FuLL;
 import delta.cion.scan.ScannerMainClass;
+import delta.cion.util.AboutPepeS;
 import delta.cion.util.Sender;
 
 import java.net.InetAddress;
 import java.util.Scanner;
 
-public class PepeS {
+public class PepeS extends AboutPepeS {
+
     private static boolean valid = false;
-    private static boolean finaly = false;
+
+
 
     public static void main(String[] args) {
+
+        saveDefaultConfig();
         ModuleCore.ModuleInitialize();
 
         Scanner scanner = new Scanner(System.in);
-        CreateConf.confCreate();
 
-        while (!finaly) {
+        while (true) {
             while (!valid) {
                 try {
                     Sender.send(1, "Enter IP or Domain: ");
@@ -34,6 +38,8 @@ public class PepeS {
                     Sender.send(1, "Enter portFinal: ");
                     int portFinal = Integer.parseInt(scanner.nextLine());
                     Sender.send(3, "Final port -> &6"+portFinal);
+
+                    if (portStart > portFinal) continue;
 
                     Sender.send(1, "Threads modifier (threads * X) (DON`T SET 0!!): ");
                     int threadsz = Integer.parseInt(scanner.nextLine());
@@ -53,14 +59,14 @@ public class PepeS {
                         Sender.send(3, "Start ip -> &6X.X.X."+ipStart);
 
                         if (ipStart >255) Sender.send(3, "Max int - 255");
-                        if (ipStart >255) break;
+                        if (ipStart >255) continue;
 
                         Sender.send(1, "Enter final ip (0.0.0.X/Y): ");
                         int ipFinal = Integer.parseInt(scanner.nextLine());
                         Sender.send(3, "Final ip -> &6X.X.X.X/"+ipFinal);
 
                         if (ipFinal >255) Sender.send(3, "Max int - 255");
-                        if (ipFinal >255) break;
+                        if (ipFinal >255) continue;
 
                         FuLL.Start(ip, portStart, portFinal, ipStart, ipFinal, threadsz, timer);
                     } else {
