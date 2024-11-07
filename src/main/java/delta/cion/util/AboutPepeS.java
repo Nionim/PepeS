@@ -12,14 +12,24 @@ public class AboutPepeS {
         return c;
     }
 
+    private static void confParams() {
+        Config().setProperty("DebugMode", "true");
+        Config().setProperty("PortForProxy", "25565");
+    }
+
     public static void saveDefaultConfig() {
         if (!confDir.exists() || !confDir.isDirectory()) confDir.mkdir();
 
-        Config().setProperty("DebugMode", "true");
-        Config().setProperty("PortForProxy", "25565");
+        confParams();
+
         try (FileOutputStream fileLocName = new FileOutputStream(confDir + "/config.properties")) {
             Config().store(fileLocName, "Configuration file");
+            Sender.send(2, "Success create config");
         } catch (IOException ignored) {}
+    }
+
+    public static Properties getConfig() {
+        return Config();
     }
 
     public static boolean reloadConfig() {
@@ -31,6 +41,7 @@ public class AboutPepeS {
             Config().clear();
             try (FileInputStream fileLocName = new FileInputStream(confDir + "/config.properties")) {
                 Config().load(fileLocName);
+                Sender.send(2, "Success reload config");
                 return true;
             } catch (IOException ignored) {
                 Sender.send(2, "&4[CODE_ERROR]: AboutPepeS.reloadConfig(). WHAT?!");

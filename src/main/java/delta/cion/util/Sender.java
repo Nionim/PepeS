@@ -9,7 +9,7 @@ public class Sender {
 
         switch (level) {
             case 52 -> {
-                if (debug) System.out.print(prefix+content+Colorize.colorize(" (DEBUG!)"));
+                if (debug) System.out.println(prefix+content+Colorize.colorize(" (DEBUG!)"));
             }
             case 0 -> System.out.print(Colorize.colorize(content));
             case 1 -> System.out.print(prefix+Colorize.colorize(content));
