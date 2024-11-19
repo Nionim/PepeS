@@ -1,5 +1,7 @@
 package delta.cion.util;
 
+import delta.cion.messages.Sender;
+
 import java.io.*;
 import java.util.Properties;
 

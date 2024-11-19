@@ -1,6 +1,6 @@
 package delta.cion.modular;
 
-import delta.cion.util.Sender;
+import delta.cion.messages.Sender;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -14,10 +14,15 @@ public class ModuleCore {
     public static void ModuleInitialize() {
         try {
             File mainDir = new File("modules");
-            if (!mainDir.exists()) mainDir.mkdir();
+            if (!mainDir.exists()) {
+                if (mainDir.mkdir()) Sender.send(3, "\"modules\" folder has been created!");
+            }
             else {
                 File[] files = mainDir.listFiles();
-                if (files != null) StartModule(files);
+                if (files != null) {
+                    Sender.send(3, "Modules found! Starting...");
+                    StartModule(files);
+                }
                 else Sender.send(3, "No modules detected!");
             }
         } catch (Exception ignored) {}

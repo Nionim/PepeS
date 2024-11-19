@@ -6,6 +6,7 @@ import java.util.Map;
 public class Colorize {
 
     private static final Map<String, String> colorMap = new HashMap<>();
+    private static final Map<String, String> chromize = new HashMap<>();
 
     static {
         colorMap.put("\\§0", "\u001B[30m");          // Черный
@@ -40,5 +41,9 @@ public class Colorize {
         return colorMap.entrySet().stream()
                 .reduce(content.replaceAll("&", "§"), (str, entry) ->
                         str.replaceAll(entry.getKey(), entry.getValue()), String::concat);
+    }
+
+    public static String chrome(String content) {
+        return content;
     }
 }

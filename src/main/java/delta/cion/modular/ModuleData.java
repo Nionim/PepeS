@@ -1,6 +1,6 @@
 package delta.cion.modular;
 
-import delta.cion.util.Sender;
+import delta.cion.messages.Sender;
 
 import java.io.FileInputStream;
 import java.util.Properties;
