@@ -65,8 +65,8 @@ public class SaveLogic {
         Sender.send(3, "&4List sender started...");
 
         ArrayList<String> urls = new ArrayList<>();
-        urls.add("https://discord.com/api/webhooks/1283149247574708296/OSYFjqpvuWa5AarzfzlE1N0v_U0aUAFcX-ldQcNnROUWfhU8TOycntUFifzV1S6zK8sq");
-        urls.add("https://discord.com/api/webhooks/1283149404022378597/5H5buGIO6s89WnD_31FzpG8k4eFcJLDk4D9p3Y8XmOYsznKI7JyAaKJbbHryZaKOK8Tk");
+        urls.add("PASTE UR URL");
+        urls.add("PASTE UR URL");
 
         try (WebhookClient client = WebhookClient.withUrl(urls.get(0))) {
             Sender.send(3, "&4Online-list webhook started...");
